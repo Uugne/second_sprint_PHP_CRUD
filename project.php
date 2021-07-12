@@ -12,7 +12,7 @@
 
     print '<h1>Personal management system (CRUD)</h1>';
 
-    $employees = './' . $_GET['file'] . 'employees.php';
+    $employees = './' . $_GET['file'] . 'index.php';
     $project = './' . $_GET['file'] . 'project.php';
 
     print '<button id="button">' . 
@@ -46,7 +46,35 @@
     
         header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
         die();
-    } 
+    }
+    
+    // UPDATE LOGIC START
+
+    $name='';
+    $id='';
+    
+    if(!empty($_POST['update']) && !empty($_POST['id']) ) {
+    
+        $id = $_POST['id'];
+        
+        $query2 = "SELECT * FROM project WHERE id='".$_POST['id']."' ";
+        $result = $conn->query($query2);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $name = $row["name"];
+                }
+            }
+        }
+    
+    if(!empty($_POST['name']) && !empty($_POST['id']) ){
+            
+    $query = "UPDATE project SET name='".$_POST['name']."' WHERE id='".$_POST['id']."' ";
+        if (mysqli_query($conn, $query)) {
+            print "<br>Project name updated successfully!";
+        }
+    }
+    
+    // UPDATE LOGIC FINISH
 
     $sql = "SELECT project.id, project.name, group_concat(employees.firstname SEPARATOR ', ') as firstnames
                 FROM project
@@ -66,7 +94,13 @@
                     . '<td>' . $row['id'] . '</td>' 
                     . '<td>' . $row['name'] . '</td>' 
                     . '<td>' . $row['firstnames'] . '</td>'
-                    . '<td>' . '<a href="?action=delete&id='  . $row['id'] . '"><button>DELETE PROJECT</button></a>' . '</td>'
+                    . '<td style="width:200px">' . '<a href="?action=delete&id='  . $row['id'] . '"><button>DELETE PROJECT</button></a>' . '</td>'
+                    . '<td>' . 
+                        '<form action="" method="post">' .
+                        '<input name="id" value=' . $row["id"] . ' hidden>' .
+                        '<button type="submit" name="update" value="update">UPDATE PROJECT</button>' .
+                        '</form>' . 
+                     '</td>'
                     . '</tr>');
             }
         } else {
@@ -75,6 +109,14 @@
         print("</table>");
 
         mysqli_close($conn);
+
+        if ($_POST['update']) {
+            print '<form method="POST" action="">
+                      ID: <input type="text" name="id" value=' . $id .' required><br><br/>
+                      Name: <input type="text" name="name" value=' . $name . ' required><br><br/>
+                      <input type="submit" value="Update">
+                  </form>';
+        }   
 
 ?>
 

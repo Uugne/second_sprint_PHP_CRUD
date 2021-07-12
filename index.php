@@ -13,7 +13,7 @@
 
     print '<h1>Personal management system (CRUD)</h1>';
 
-    $employees = './' . $_GET['file'] . 'employees.php';
+    $employees = './' . $_GET['file'] . 'index.php';
     $project = './' . $_GET['file'] . 'project.php';
 
     print '<button id="button">' . 
@@ -69,9 +69,13 @@
     if(!empty($_POST['firstname']) && !empty($_POST['id']) ){
         
     $query = "UPDATE employees SET firstname='".$_POST['firstname']."' WHERE id='".$_POST['id']."' ";
+        if (mysqli_query($conn, $query)) {
+            print "<br>Employee name updated successfully!";
+        }
     }
 
     // UPDATE LOGIC FINISH
+
     $sql = "SELECT employees.id, employees.firstname, project.name
             FROM employees
             LEFT JOIN project
@@ -104,13 +108,14 @@
 
         mysqli_close($conn);
 
-    if ($_POST['update']) 
-
+    if ($_POST['update']) {
           print '<form method="POST" action="">
                     ID: <input type="text" name="id" value=' . $id .' required><br><br/>
                     Name: <input type="text" name="firstname" value=' . $firstname . ' required><br><br/>
-                    <input type="submit" value="update">
+                    <input type="submit" value="Update">
                 </form>';
+    }            
+
 ?>
 
 </body>
