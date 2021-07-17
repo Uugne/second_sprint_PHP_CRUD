@@ -27,12 +27,13 @@
     $password = "mysql";
     $dbname = "php2021";
 
-    // Create connection
+    
     $conn = mysqli_connect($servername, $username, $password, $dbname);
-    // Check connection
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
+
+    // DELETE LOGIC
 
     if(isset($_GET['action']) and $_GET['action'] == 'delete'){
         $sql = 'DELETE FROM project WHERE id = ?';
@@ -67,14 +68,34 @@
         }
     
     if(!empty($_POST['name']) && !empty($_POST['id']) ){
-            
     $query = "UPDATE project SET name='".$_POST['name']."' WHERE id='".$_POST['id']."' ";
         if (mysqli_query($conn, $query)) {
             print "<br>Project name updated successfully!";
         }
     }
     
-    // UPDATE LOGIC FINISH
+    // CREATE LOGIC
+
+        if(isset($_POST['prname']) & !empty($_POST['prname'])){
+            $fname = $_POST['prname'];
+
+            $createSql = "INSERT INTO `project` (name) VALUES (?) ";
+
+            $stmt=$conn->prepare($createSql);
+            $stmt->bind_param("s",$fname);
+            $stmt->execute();
+
+            $stmt->close();
+            mysqli_close($conn);
+
+            header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+            $res = mysqli_query($conn, $createSql) or die(mysqli_error($conn));
+            
+        }
+        
+
+    // CREATE LOGIC FINISH
+
 
     $sql = "SELECT project.id, project.name, group_concat(employees.firstname SEPARATOR ', ') as firstnames
                 FROM project
@@ -118,7 +139,20 @@
                   </form>';
         }   
 
-?>
+    ?>
+
+    <br>
+    <form action="" method="post" name="form1">
+		<table>
+			<tr>
+				<td><input type="text" name="prname" placeholder="Project name"></td>
+			</tr>
+			<tr>
+				<td><input type="submit" name="Submit" value="Add a project"></td>
+			</tr>
+		</table>
+	</form>
+
 
 </body>
 </html>

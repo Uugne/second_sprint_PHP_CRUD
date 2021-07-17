@@ -34,6 +34,8 @@
         die("Connection failed: " . mysqli_connect_error());
     }
 
+    // DELETE LOGIC
+
     if(isset($_GET['action']) and $_GET['action'] == 'delete'){
         $sql = 'DELETE FROM employees WHERE id = ?';
         
@@ -74,7 +76,29 @@
         }
     }
 
-    // UPDATE LOGIC FINISH
+    // CREATE LOGIC
+
+    include_once("index.php");
+
+        if(isset($_POST['firstname']) & !empty($_POST['firstname'])){
+            $fname = $_POST['firstname'];
+            $projectID = $_POST['project_id'];
+
+            $createSql = "INSERT INTO `employees` (firstname, project_id) VALUES (?, ?) ";
+
+            $stmt=$conn->prepare($createSql);
+            $stmt->bind_param("s, i", $fname, $projectID);
+            $stmt->execute();
+
+            $stmt->close();
+            mysqli_close($conn);
+
+            header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+            $res = mysqli_query($conn, $createSql) or die(mysqli_error($conn));
+            
+        }
+       
+    // CREATE LOGIC FINISH
 
     $sql = "SELECT employees.id, employees.firstname, project.name
             FROM employees
@@ -114,9 +138,32 @@
                     Name: <input type="text" name="firstname" value=' . $firstname . ' required><br><br/>
                     <input type="submit" value="Update">
                 </form>';
-    }            
+    }    
+    ?>
+    <br>
 
-?>
+    <form action="" method="post" name="form1">
+		<table>
+            <tr>
+                <select name="project_id" id="category">
+                    <option value=''>Select a project</option>
+                        <?php $sql = mysqli_query(mysqli_connect($servername, $username, $password, $dbname), "SELECT id, name FROM project");
+                            while ($row = mysqli_fetch_array($sql)) {
+                                    $id = $row['id'];
+                                    $name = $row['name'];
+                        ?>
+                    <option value='<?php echo $id; ?>'><?php echo $name; ?></option>
+                        <?php } ?> 
+                </select>
+            </tr>
+			<tr>
+				<td><input type="text" name="firstname" placeholder="First name"></td>
+			</tr>
+			<tr>
+				<td><input type="submit" name="Submit" value="Add a first name and attach to a project"></td>
+			</tr>
+		</table>
+	</form>
 
 </body>
 </html>
