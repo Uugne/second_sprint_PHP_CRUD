@@ -1,9 +1,8 @@
-<div style="text-align:center">
-<img src="./readme_photo/person.png" alt="drawing" width="180"/>
+<p align="center"><img src="./readme_photo/person.png" alt="drawing" width="180"/></p>
 
-# Personal Management System
+<h1 align="center">Personal Management System</h1>
 
-<i>PHP CRUD application - Second sprint project</i></div>
+<p align="center"><i>PHP CRUD application - Second sprint project</i></p>
 
 ## Functionality
 - Display all employees/projects.
