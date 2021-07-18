@@ -80,14 +80,14 @@
 
     include_once("index.php");
 
-        if(isset($_POST['firstname']) & !empty($_POST['firstname'])){
+        if(isset($_POST['firstname']) & !empty($_POST['firstname']) & isset($_POST['project_id'])){
             $fname = $_POST['firstname'];
             $projectID = $_POST['project_id'];
 
             $createSql = "INSERT INTO `employees` (firstname, project_id) VALUES (?, ?) ";
 
             $stmt=$conn->prepare($createSql);
-            $stmt->bind_param("s, i", $fname, $projectID);
+            $stmt->bind_param("si", $fname, $projectID);
             $stmt->execute();
 
             $stmt->close();
@@ -134,7 +134,7 @@
 
     if ($_POST['update']) {
           print '<form method="POST" action="">
-                    ID: <input type="text" name="id" value=' . $id .' required><br><br/>
+                    <input type="text" name="id" value=' . $id .' hidden><br><br/>
                     Name: <input type="text" name="firstname" value=' . $firstname . ' required><br><br/>
                     <input type="submit" value="Update">
                 </form>';

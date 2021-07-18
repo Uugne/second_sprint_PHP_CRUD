@@ -47,7 +47,7 @@
     
         header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
         die();
-    }
+    } 
     
     // UPDATE LOGIC START
 
@@ -76,22 +76,23 @@
     
     // CREATE LOGIC
 
-        if(isset($_POST['prname']) & !empty($_POST['prname'])){
-            $fname = $_POST['prname'];
-
-            $createSql = "INSERT INTO `project` (name) VALUES (?) ";
-
-            $stmt=$conn->prepare($createSql);
-            $stmt->bind_param("s",$fname);
-            $stmt->execute();
-
-            $stmt->close();
-            mysqli_close($conn);
-
-            header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
-            $res = mysqli_query($conn, $createSql) or die(mysqli_error($conn));
+    if(isset($_POST['prname']) & !empty($_POST['prname'])){
             
-        }
+        $fname = $_POST['prname'];
+
+        $createSql = "INSERT INTO `project` (name) VALUES (?) ";
+
+        $stmt=$conn->prepare($createSql);
+        $stmt->bind_param("s",$fname);
+        $stmt->execute();
+
+        $stmt->close();
+        mysqli_close($conn);
+
+        header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+        $res = mysqli_query($conn, $createSql) or die(mysqli_error($conn));
+    };
+        
         
 
     // CREATE LOGIC FINISH
@@ -133,7 +134,7 @@
 
         if ($_POST['update']) {
             print '<form method="POST" action="">
-                      ID: <input type="text" name="id" value=' . $id .' required><br><br/>
+                      <input type="text" name="id" value=' . $id .' hidden><br><br/>
                       Name: <input type="text" name="name" value=' . $name . ' required><br><br/>
                       <input type="submit" value="Update">
                   </form>';
